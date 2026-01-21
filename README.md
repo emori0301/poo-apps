@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# pooApps
 
-## Getting Started
+Webアプリの実験場兼ポートフォリオサイト「pooApps」です。
 
-First, run the development server:
+ジョークアプリ（クソアプリ）を作成し、アーカイブとして積み上げていくサイトです。
+
+## 技術スタック
+
+- Framework: Next.js (App Router)
+- Language: TypeScript
+- Styling: Tailwind CSS
+- UI Library: shadcn/ui (Radix UI base)
+- Icons: Lucide React
+- Linter/Formatter: Biome
+- State: React Hooks + LocalStorage
+- Infrastructure: Docker (Multi-stage build)
+
+## セットアップ
+
+### Dockerを使用する場合（推奨）
+
+#### 開発環境
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+docker-compose up dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+開発サーバーが `http://localhost:3000` で起動します。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+#### 本番環境
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+docker-compose up app
+```
 
-## Learn More
+本番サーバーが `http://localhost:3000` で起動します。
 
-To learn more about Next.js, take a look at the following resources:
+### ローカル環境で開発する場合
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm install
+npm run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+開発サーバーが `http://localhost:3000` で起動します。
 
-## Deploy on Vercel
+## 実装済みアプリ
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. **無駄ボタン** (`/apps/useless-button`)
+   - 押しても何も起こらないボタンです
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+2. **おみくじ地獄** (`/apps/omikuji-hell`)
+   - 凶以上しか出ないおみくじです
+
+3. **カラーフラッシャー** (`/apps/color-flasher`)
+   - クリックで背景色が変わるアプリです
+
+## コーディング規約
+
+1. **変数宣言**: `let` は使用せず、すべて `const` を使用すること
+2. **関数**: 即時実行関数 (IIFE) は禁止
+3. **条件分岐**: 三項演算子のネストは禁止、`if` 文の `{}` は1行であっても省略禁止、早期リターンを積極的に使用
+4. **型安全性**: `any` 型の使用は禁止
+5. **コメント**: コード自体で意図が伝わる命名を心がけ、コメントは必要最低限に留める
+6. **コンポーネント**: 責務に応じて可能な限り細かく分離、ページファイル以外はNamed Exportを使用
+7. **Linter対応**: Biome のデフォルトルールに準拠
+
+## プロジェクト構造
+
+```
+app/
+  apps/
+    [app-slug]/
+      page.tsx          # アプリページ
+  page.tsx              # トップページ
+components/
+  apps/                 # 各アプリのコンポーネント
+  ui/                   # shadcn/uiコンポーネント
+  AppLayout.tsx         # 共通レイアウト
+lib/
+  appsData.ts           # アプリ設定ファイル
+```
+
+## 新しいアプリの追加方法
+
+1. `lib/appsData.ts` にアプリ情報を追加
+2. `components/apps/` にアプリコンポーネントを作成
+3. `app/apps/[app-slug]/page.tsx` にルーティングを追加
