@@ -12,6 +12,15 @@ import { toast } from "sonner";
 
 type GameState = "waiting" | "countdown" | "silence" | "ready" | "finished";
 
+// YouTube IFrame API のうち、このアプリで使う分だけの型
+interface YTPlayer {
+  playVideo(): void;
+  pauseVideo(): void;
+  seekTo(seconds: number, allowSeekAhead: boolean): void;
+  getPlayerState(): number;
+  destroy(): void;
+}
+
 declare global {
   interface Window {
     YT: {
@@ -25,13 +34,15 @@ declare global {
             controls?: number;
             rel?: number;
             modestbranding?: number;
+            showinfo?: number;
           };
           events?: {
-            onReady?: (event: { target: YT.Player }) => void;
-            onStateChange?: (event: { data: number; target: YT.Player }) => void;
+            onReady?: (event: { target: YTPlayer }) => void;
+            onStateChange?: (event: { data: number; target: YTPlayer }) => void;
+            onError?: (event: { data: number; target: YTPlayer }) => void;
           };
         },
-      ) => YT.Player;
+      ) => YTPlayer;
       PlayerState: {
         UNSTARTED: -1;
         ENDED: 0;
@@ -56,7 +67,7 @@ export function DrumTimingApp() {
   const silenceStartTime = useRef<number | null>(null);
   const drumTime = useRef<number | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
-  const playerRef = useRef<YT.Player | null>(null);
+  const playerRef = useRef<YTPlayer | null>(null);
   const playerContainerRef = useRef<HTMLDivElement>(null);
   const drumHitTimeRef = useRef<number>(190);
   const videoStartTimeRef = useRef<number>(177);
